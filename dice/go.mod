@@ -2,8 +2,6 @@ module github.com/unwelcome/devops4/dice
 
 go 1.24.4
 
-replace github.com/unwelcome/devops4/proto => ../proto
-
 require (
 	github.com/unwelcome/devops4/proto v0.0.0-00010101000000-000000000000
 	google.golang.org/grpc v1.77.0
@@ -16,3 +14,5 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251022142026-3a174f9686a8 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 )
+
+replace github.com/unwelcome/devops4/proto => ../proto

@@ -2,13 +2,15 @@ FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+COPY ./gateway/go.mod ./gateway/go.sum ./
+
+COPY ./proto /proto
 
 RUN go mod download
 
-COPY . .
+COPY ./gateway .
 
-RUN go build -o gateway ./main.go
+RUN go build -ldflags "-s -w" -o gateway ./main.go
 
 FROM alpine:latest
 

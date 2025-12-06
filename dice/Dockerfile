@@ -2,13 +2,15 @@ FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+COPY ./dice/go.mod ./dice/go.sum ./
+
+COPY ./proto /proto
 
 RUN go mod download
 
-COPY . .
+COPY ./dice .
 
-RUN go build -o dice ./main.go
+RUN go build -ldflags "-s -w" -o dice ./main.go
 
 FROM alpine:latest
 

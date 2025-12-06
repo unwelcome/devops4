@@ -1,0 +1,23 @@
+# 1. Генерация CA
+openssl req -x509 -newkey rsa:4096 -days 365 -nodes -keyout ./ca.key -out ./ca.crt -subj "/CN=MyCA"
+
+# 2. Конфиг для сертификата (чтобы работали SAN DNS имена)
+echo "[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+[req_distinguished_name]
+CN = nginx
+[v3_req]
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = nginx
+DNS.2 = generator" > ./san.cnf
+
+# 3. Генерация ключа сервера и CSR
+openssl req -newkey rsa:4096 -nodes -keyout ./server.key -out ./server.csr -config ./san.cnf
+
+# 4. Подпись сертификата сервера нашим CA
+openssl x509 -req -in ./server.csr -CA ./ca.crt -CAkey ./ca.key -CAcreateserial -out ./server.crt -days 365 -extensions v3_req -extfile ./san.cnf
