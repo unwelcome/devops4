@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dice;
+option go_package = "./proto/diceProto";
+
+service DiceService {
+  rpc Roll (RollRequest) returns (RollResponse);
+}
+
+message RollRequest {
+  string operation_id = 1;
+}
+message RollResponse {
+  int32 number = 1;
+}

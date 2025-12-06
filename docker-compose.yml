@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  dice:
+    build:
+      context: ./dice
+      dockerfile: Dockerfile
+    volumes:
+      - ./certs:/certs
+    networks:
+      - dice-net
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/certs
+    ports:
+      - "50052:443" # Можно дергать снаружи, но Gateway ходит внутри сети на 443
+    depends_on:
+      - dice
+    networks:
+      - dice-net
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    volumes:
+      - ./certs:/certs
+    depends_on:
+      - nginx
+    networks:
+      - dice-net
+
+networks:
+  dice-net:
